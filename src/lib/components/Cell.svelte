@@ -1,7 +1,9 @@
 <script lang="ts">
-	export let number: number | undefined = undefined;
-	export let letter: string | undefined = undefined;
-	export let black: boolean = false;
+	import type { CellBlack, CellLetter, CellNumber } from '$lib/types/crossword';
+
+	export let number: CellNumber = null;
+	export let letter: CellLetter = null;
+	export let black: CellBlack = false;
 
 	function toggleBlack() {
 		black = !black;

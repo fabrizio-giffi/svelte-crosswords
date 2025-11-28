@@ -1,24 +1,24 @@
 <script lang="ts">
 	import Cell from '$lib/components/Cell.svelte';
-
+	import type { Cell as CellType } from '$lib/types/crossword';
 	let hor: number = 1;
 	let ver: number = 1;
-	let cells = [];
+	let cells: CellType[][] = [[]];
 
-	function createCells() {
+	function createCells(): void {
 		cells = Array(ver)
-			.fill()
+			.fill(null)
 			.map(() =>
 				Array(hor)
-					.fill()
-					.map(() => ({ number: undefined, black: false }))
+					.fill(null)
+					.map(() => ({ number: null, letter: null, black: false }))
 			);
 	}
 
-	function assignNumbers() {
+	function assignNumbers(): void {
 		let sequenceNumber = 1;
 
-		cells.forEach((row) => row.forEach((cell) => (cell.number = undefined)));
+		cells.forEach((row) => row.forEach((cell) => (cell.number = null)));
 
 		for (let row = 0; row < ver; row++) {
 			for (let col = 0; col < hor; col++) {

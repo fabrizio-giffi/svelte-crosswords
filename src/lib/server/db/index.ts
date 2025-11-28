@@ -2,7 +2,7 @@ import { Model } from 'objection';
 import knex from 'knex';
 import CrosswordsModel from './models';
 import { serializeResponse } from './serializer';
-import type { Crossword } from '$lib/types';
+import type { Crossword } from '$lib/types/crossword';
 import type { CreateCrosswordPayload, CreateCrosswordResponse } from './types.ts';
 
 // Initialize knex.
