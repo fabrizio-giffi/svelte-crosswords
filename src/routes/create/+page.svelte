@@ -22,19 +22,32 @@
 
 		for (let row = 0; row < ver; row++) {
 			for (let col = 0; col < hor; col++) {
-				if (!cells[row][col].black && (isHorizontalStart(row, col) || isVerticalStart(row, col))) {
+				if (isWordStart(row, col)) {
 					cells[row][col].number = sequenceNumber++;
 				}
 			}
 		}
 	}
 
-	function isHorizontalStart(row, col) {
-		return (col === 0 || cells[row][col - 1].black) && col < hor - 1 && !cells[row][col + 1].black;
+	function isWordStart(row: number, col: number) {
+		const cellIsBlack: boolean = cells[row][col].black;
+		return !cellIsBlack && (_isHorizontalWordStart(row, col) || _isVerticalWordStart(row, col));
 	}
 
-	function isVerticalStart(row, col) {
-		return (row === 0 || cells[row - 1][col].black) && row < ver - 1 && !cells[row + 1][col].black;
+	function _isHorizontalWordStart(row: number, col: number) {
+		const isLeftEdge: boolean = col === 0;
+		const isRightEdge: boolean = col === hor - 1;
+		const previousCellIsBlack: boolean = col > 0 ? cells[row][col - 1].black : false;
+		const nextCellIsBlack: boolean = col < hor - 1 ? cells[row][col + 1].black : false;
+		return (isLeftEdge || previousCellIsBlack) && !isRightEdge && !nextCellIsBlack;
+	}
+
+	function _isVerticalWordStart(row: number, col: number) {
+		const isTopEdge: boolean = row === 0;
+		const isBottomEdge: boolean = row === ver - 1;
+		const previousCellIsBlack: boolean = row > 0 ? cells[row - 1][col].black : false;
+		const nextCellIsBlack: boolean = row < ver - 1 ? cells[row + 1][col].black : false;
+		return (isTopEdge || previousCellIsBlack) && !isBottomEdge && !nextCellIsBlack;
 	}
 </script>
 
