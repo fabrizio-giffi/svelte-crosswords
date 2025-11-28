@@ -1,0 +1,52 @@
+@import 'tailwindcss';
+@plugin '@tailwindcss/typography';
+
+:root {
+	--cell-black: rgb(19, 21, 23);
+	--cell-white: rgb(253, 253, 253);
+	--cell-outline-white: rgb(216, 216, 216);
+	--cell-hover: rgba(0, 117, 219, 0.2);
+	--cell-hover-outline: rgba(0, 100, 187, 0.199);
+	--cell-black-hover: rgba(0, 30, 56, 0.8);
+	--cell-black-hover-outline: rgb(0, 30, 56);
+}
+
+* {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+	box-sizing: border-box;
+}
+
+body {
+	line-height: 1;
+}
+
+ol,
+ul {
+	list-style: none;
+}
+
+a {
+	text-decoration: none;
+	color: inherit;
+}
+
+button,
+input,
+select,
+textarea {
+	font-family: inherit;
+	font-size: inherit;
+	line-height: inherit;
+	margin: 0;
+}
+
+img {
+	max-width: 100%;
+	height: auto;
+	display: block;
+}
