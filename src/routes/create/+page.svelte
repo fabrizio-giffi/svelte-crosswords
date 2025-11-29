@@ -37,7 +37,7 @@
 						{#each row as cell}
 							<Cell
 								bind:black={cell.black}
-								bind:number={cell.number}
+								number={cell.number}
 								computeGridNumbersCallback={crossword.computeGridNumbers}
 							/>
 						{/each}

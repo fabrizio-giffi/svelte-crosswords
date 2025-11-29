@@ -10,7 +10,7 @@
 
 	let {
 		computeGridNumbersCallback,
-		number = $bindable(),
+		number,
 		black = $bindable(),
 		letter = $bindable()
 	}: Props = $props();
