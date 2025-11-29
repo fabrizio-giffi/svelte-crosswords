@@ -1,9 +1,10 @@
-import type { Cell as CellType } from '$lib/types/crossword';
+import type { Cell as CellType, Definitions } from '$lib/types/crossword';
 
 export class Crossword {
 	hor: number;
 	ver: number;
 	cells: CellType[][] = $state([[]]);
+	definitions: Definitions = { horizontal: [], vertical: [] };
 
 	constructor(hor: number, ver: number) {
 		this.hor = hor;
@@ -22,21 +23,33 @@ export class Crossword {
 		let sequenceNumber = 1;
 
 		this.cells.forEach((row) => row.forEach((cell) => (cell.number = null)));
+		this.definitions = { horizontal: [], vertical: [] };
 
 		for (let row = 0; row < this.ver; row++) {
 			for (let col = 0; col < this.hor; col++) {
-				if (this.isWordStart(row, col)) {
-					this.cells[row][col].number = sequenceNumber++;
+				if (this.cells[row][col].black) continue;
+				if (this.isWordStart(row, col, sequenceNumber)) {
+					this.cells[row][col].number = sequenceNumber;
+					sequenceNumber++;
 				}
 			}
 		}
 	};
 
-	private isWordStart(row: number, col: number) {
-		const cellIsBlack: boolean = this.cells[row][col].black;
-		return (
-			!cellIsBlack && (this._isHorizontalWordStart(row, col) || this._isVerticalWordStart(row, col))
-		);
+	private isWordStart(row: number, col: number, sequenceNumber: number): boolean {
+		const isHorizontalStart = this._isHorizontalWordStart(row, col);
+		const isVerticalStart = this._isVerticalWordStart(row, col);
+		if (isHorizontalStart) this.addHorizontalDefinition(sequenceNumber);
+		if (isVerticalStart) this.addVerticalDefinition(sequenceNumber);
+		return isHorizontalStart || isVerticalStart;
+	}
+
+	private addHorizontalDefinition(sequenceNumber: number): void {
+		this.definitions.horizontal.push({ gridNumber: sequenceNumber, text: null });
+	}
+
+	private addVerticalDefinition(sequenceNumber: number): void {
+		this.definitions.vertical.push({ gridNumber: sequenceNumber, text: null });
 	}
 
 	private _isHorizontalWordStart(row: number, col: number) {

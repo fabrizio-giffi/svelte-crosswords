@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Cell from '$lib/components/Cell.svelte';
+	import Definition from '$lib/components/Definition.svelte';
 	import { Crossword } from '$lib/crossword.svelte';
 	let hor: number = 1;
 	let ver: number = 1;
@@ -41,6 +42,18 @@
 							/>
 						{/each}
 					</div>
+				{/each}
+			</div>
+			<div class="definitions-container">
+				{#each Object.entries(crossword.definitions) as [direction, definitionsList]}
+					<h3>{direction}</h3>
+					<ul>
+						{#each definitionsList as definition}
+							<li>
+								<Definition gridNumber={definition.gridNumber} bind:text={definition.text} />
+							</li>
+						{/each}
+					</ul>
 				{/each}
 			</div>
 		{/if}
