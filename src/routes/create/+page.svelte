@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Button from '$lib/components/Button.svelte';
 	import Cell from '$lib/components/Cell.svelte';
 	import Definition from '$lib/components/Definition.svelte';
 	import { Crossword } from '$lib/crossword';
@@ -24,9 +25,9 @@
 				<input name="ver" bind:value={ver} type="number" step="1" min="1" />
 			</label>
 		</div>
-		<button type="submit" on:click|preventDefault={() => createCrossword(hor, ver)}
-			>{crossword ? 'Reset' : 'Create'} grid</button
-		>
+		<Button type="submit" onclickCallback={() => createCrossword(hor, ver)}>
+			{crossword ? 'Reset' : 'Create'} grid
+		</Button>
 	</form>
 
 	<section class="create-mode">

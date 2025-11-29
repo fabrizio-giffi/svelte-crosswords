@@ -1,14 +1,30 @@
 <script lang="ts">
-	export let label = '';
-	export let disabled = false;
-	let props = { ...$$restProps };
+	import type { Snippet } from 'svelte';
+
+	type ButtonType = 'button' | 'submit' | 'reset' | null | undefined;
+	interface Props {
+		type: ButtonType;
+		label?: string;
+		disabled?: boolean;
+		onclickCallback?: () => void;
+		children: Snippet;
+	}
+
+	let {
+		type = 'button',
+		label,
+		disabled = false,
+		onclickCallback = () => {},
+		children
+	}: Props = $props();
 </script>
 
 <button
-	class={`${props.class} rounded-sm !border bg-gray-300 !px-3 !py-2 hover:cursor-pointer hover:bg-blue-200`}
+	class={'rounded-sm !border bg-gray-300 !px-3 !py-2 hover:cursor-pointer hover:bg-blue-200'}
+	{type}
 	{disabled}
-	style={props.style}
+	onclick={() => onclickCallback()}
 >
 	{label}
-	<slot />
+	{@render children?.()}
 </button>
