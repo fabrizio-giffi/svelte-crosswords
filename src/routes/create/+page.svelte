@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Cell from '$lib/components/Cell.svelte';
 	import Definition from '$lib/components/Definition.svelte';
-	import { Crossword } from '$lib/crossword.svelte';
+	import { Crossword } from '$lib/crossword';
 	let hor: number = 1;
 	let ver: number = 1;
 	let crossword: Crossword;

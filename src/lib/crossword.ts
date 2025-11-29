@@ -3,7 +3,7 @@ import type { Cell as CellType, Definitions } from '$lib/types/crossword';
 export class Crossword {
 	hor: number;
 	ver: number;
-	cells: CellType[][] = $state([[]]);
+	cells: CellType[][] = [[]];
 	definitions: Definitions = { horizontal: [], vertical: [] };
 
 	constructor(hor: number, ver: number) {
