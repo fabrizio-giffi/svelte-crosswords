@@ -1,16 +1,27 @@
 <script lang="ts">
 	import type { CellBlack, CellLetter, CellNumber } from '$lib/types/crossword';
 
-	export let number: CellNumber = null;
-	export let letter: CellLetter = null;
-	export let black: CellBlack = false;
+	interface Props {
+		computeGridNumbersCallback: () => void;
+		number: CellNumber;
+		black: CellBlack;
+		letter?: CellLetter;
+	}
+
+	let {
+		computeGridNumbersCallback,
+		number = $bindable(),
+		black = $bindable(),
+		letter = $bindable()
+	}: Props = $props();
 
 	function toggleBlack() {
 		black = !black;
+		computeGridNumbersCallback();
 	}
 </script>
 
-<button type="button" class={`cell ${black && 'cell-black'}`} on:click={toggleBlack}>
+<button type="button" class={`cell ${black && 'cell-black'}`} onclick={() => toggleBlack()}>
 	<span class="cell-number">
 		{#if number !== undefined}
 			{number}
