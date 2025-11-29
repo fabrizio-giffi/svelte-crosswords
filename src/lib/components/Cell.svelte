@@ -22,16 +22,8 @@
 </script>
 
 <button type="button" class={`cell ${black && 'cell-black'}`} onclick={() => toggleBlack()}>
-	<span class="cell-number">
-		{#if number !== undefined}
-			{number}
-		{/if}
-	</span>
-	<span>
-		{#if letter !== undefined}
-			{letter}
-		{/if}
-	</span>
+	<span class="cell-number">{number && number}</span>
+	<span>{letter && letter}</span>
 </button>
 
 <style>
