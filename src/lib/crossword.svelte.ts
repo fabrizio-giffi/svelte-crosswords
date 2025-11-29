@@ -37,8 +37,8 @@ export class Crossword {
 	};
 
 	private isWordStart(row: number, col: number, sequenceNumber: number): boolean {
-		const isHorizontalStart = this._isHorizontalWordStart(row, col);
-		const isVerticalStart = this._isVerticalWordStart(row, col);
+		const isHorizontalStart: boolean = this._isHorizontalWordStart(row, col);
+		const isVerticalStart: boolean = this._isVerticalWordStart(row, col);
 		if (isHorizontalStart) this.addHorizontalDefinition(sequenceNumber);
 		if (isVerticalStart) this.addVerticalDefinition(sequenceNumber);
 		return isHorizontalStart || isVerticalStart;
@@ -52,7 +52,7 @@ export class Crossword {
 		this.definitions.vertical.push({ gridNumber: sequenceNumber, text: null });
 	}
 
-	private _isHorizontalWordStart(row: number, col: number) {
+	private _isHorizontalWordStart(row: number, col: number): boolean {
 		const isLeftEdge: boolean = col === 0;
 		const isRightEdge: boolean = col === this.hor - 1;
 		const previousCellIsBlack: boolean = col > 0 ? this.cells[row][col - 1].black : false;
@@ -60,7 +60,7 @@ export class Crossword {
 		return (isLeftEdge || previousCellIsBlack) && !isRightEdge && !nextCellIsBlack;
 	}
 
-	private _isVerticalWordStart(row: number, col: number) {
+	private _isVerticalWordStart(row: number, col: number): boolean {
 		const isTopEdge: boolean = row === 0;
 		const isBottomEdge: boolean = row === this.ver - 1;
 		const previousCellIsBlack: boolean = row > 0 ? this.cells[row - 1][col].black : false;
