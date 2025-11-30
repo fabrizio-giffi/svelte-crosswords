@@ -2,13 +2,15 @@
 	import Button from '$lib/components/Button.svelte';
 	import Cell from '$lib/components/Cell.svelte';
 	import Definition from '$lib/components/Definition.svelte';
-	import { Crossword } from '$lib/crossword';
-	let hor: number = 1;
-	let ver: number = 1;
-	let crossword: Crossword;
+	import { Crossword } from '$lib/crossword.svelte.js';
+
+	export let data: { crossword: Crossword };
+	let { crossword } = data;
+	let hor = crossword.hor;
+	let ver = crossword.ver;
 
 	function createCrossword(hor: number, ver: number) {
-		if (crossword && !confirm('Are you sure you want to reset the grid?')) return;
+		if (crossword.workInProgress && !confirm('Are you sure you want to reset the grid?')) return;
 		crossword = Crossword.createEmptyGrid(hor, ver);
 	}
 </script>
@@ -26,12 +28,12 @@
 			</label>
 		</div>
 		<Button type="submit" onclickCallback={() => createCrossword(hor, ver)}>
-			{crossword ? 'Reset' : 'Create'} grid
+			{crossword.workInProgress ? 'Reset' : 'Create'} grid
 		</Button>
 	</form>
 
 	<section class="create-mode">
-		{#if crossword}
+		{#if crossword.workInProgress}
 			<div class="crossword-container">
 				{#each crossword.cells as row}
 					<div class="flex">

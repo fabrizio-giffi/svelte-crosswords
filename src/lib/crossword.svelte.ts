@@ -1,15 +1,20 @@
 import type { Cell as CellType, Definitions } from '$lib/types/crossword';
 
+const emptyCellsDefault = [[{ number: null, letter: null, black: false }]];
+
 export class Crossword {
 	hor: number;
 	ver: number;
-	cells: CellType[][] = [[]];
-	definitions: Definitions = { horizontal: [], vertical: [] };
+	cells: CellType[][] = $state(emptyCellsDefault);
+	definitions: Definitions = $state({ horizontal: [], vertical: [] });
+	workInProgress: boolean = $derived(
+		JSON.stringify(this.cells) !== JSON.stringify(emptyCellsDefault)
+	);
 
 	constructor(
 		hor: number,
 		ver: number,
-		cells: CellType[][] = [[]],
+		cells: CellType[][] = emptyCellsDefault,
 		definitions: Definitions = { horizontal: [], vertical: [] }
 	) {
 		this.hor = hor;
@@ -28,7 +33,7 @@ export class Crossword {
 					.map(() => ({ number: null, letter: null, black: false }))
 			);
 		crossword.computeGridNumbers();
-		return crossword
+		return crossword;
 	}
 
 	computeGridNumbers = (): void => {
@@ -46,6 +51,7 @@ export class Crossword {
 				}
 			}
 		}
+		this.persistToLocalStorage();
 	};
 
 	private isWordStart(row: number, col: number, sequenceNumber: number): boolean {
@@ -78,5 +84,12 @@ export class Crossword {
 		const previousCellIsBlack: boolean = row > 0 ? this.cells[row - 1][col].black : false;
 		const nextCellIsBlack: boolean = row < this.ver - 1 ? this.cells[row + 1][col].black : false;
 		return (isTopEdge || previousCellIsBlack) && !isBottomEdge && !nextCellIsBlack;
+	}
+
+	private persistToLocalStorage() {
+		localStorage.setItem('hor', JSON.stringify(this.hor));
+		localStorage.setItem('ver', JSON.stringify(this.ver));
+		localStorage.setItem('cells', JSON.stringify(this.cells));
+		localStorage.setItem('definitions', JSON.stringify(this.definitions));
 	}
 }
