@@ -6,17 +6,29 @@ export class Crossword {
 	cells: CellType[][] = [[]];
 	definitions: Definitions = { horizontal: [], vertical: [] };
 
-	constructor(hor: number, ver: number) {
+	constructor(
+		hor: number,
+		ver: number,
+		cells: CellType[][] = [[]],
+		definitions: Definitions = { horizontal: [], vertical: [] }
+	) {
 		this.hor = hor;
 		this.ver = ver;
-		this.cells = Array(ver)
+		this.cells = cells;
+		this.definitions = definitions;
+	}
+
+	static createEmptyGrid(hor: number, ver: number) {
+		const crossword = new Crossword(hor, ver);
+		crossword.cells = Array(ver)
 			.fill(null)
 			.map(() =>
 				Array(hor)
 					.fill(null)
 					.map(() => ({ number: null, letter: null, black: false }))
 			);
-		this.computeGridNumbers();
+		crossword.computeGridNumbers();
+		return crossword
 	}
 
 	computeGridNumbers = (): void => {

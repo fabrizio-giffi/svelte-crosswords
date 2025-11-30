@@ -9,7 +9,7 @@
 
 	function createCrossword(hor: number, ver: number) {
 		if (crossword && !confirm('Are you sure you want to reset the grid?')) return;
-		crossword = new Crossword(hor, ver);
+		crossword = Crossword.createEmptyGrid(hor, ver);
 	}
 </script>
 
