@@ -2,14 +2,15 @@ import { Crossword } from '$lib/crossword.svelte';
 import { browser } from '$app/environment';
 
 export function load() {
-	const { hor, ver, cells, definitions } = loadFromStorage();
-	const crossword = new Crossword(hor, ver, cells, definitions);
+	const { horizontal, vertical, id, cells, definitions } = loadFromStorage();
+	const crossword = new Crossword(horizontal, vertical, id, cells, definitions);
 	return { crossword };
 }
 
 function loadFromStorage() {
-	const hor = (browser && JSON.parse(localStorage.getItem('hor'))) || 1;
-	const ver = (browser && JSON.parse(localStorage.getItem('ver'))) || 1;
+	const id = (browser && JSON.parse(localStorage.getItem('id'))) || -1;
+	const horizontal = (browser && JSON.parse(localStorage.getItem('horizontal'))) || 1;
+	const vertical = (browser && JSON.parse(localStorage.getItem('vertical'))) || 1;
 	const cells = (browser && JSON.parse(localStorage.getItem('cells'))) || [
 		[{ number: null, letter: null, black: false }]
 	];
@@ -17,5 +18,5 @@ function loadFromStorage() {
 		horizontal: [],
 		vertical: []
 	};
-	return { hor, ver, cells, definitions };
+	return { horizontal, vertical, id, cells, definitions };
 }

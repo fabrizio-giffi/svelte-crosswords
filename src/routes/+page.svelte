@@ -9,12 +9,14 @@
 	<div>
 		{#each data.crosswords as crossword}
 			___________________________________
-			<p>ID {crossword.id}</p>
-			<div class="flex gap-3">
-				<p>{crossword.hor}</p>
-				<p>{crossword.ver}</p>
-				<p>{crossword.created}</p>
-			</div>
+			<a href="/play/{crossword.id}">
+				<p>ID {crossword.id}</p>
+				<div class="flex gap-3">
+					<p>{crossword.horizontal}</p>
+					<p>{crossword.vertical}</p>
+					<p>{crossword.created}</p>
+				</div>
+			</a>
 		{/each}
 	</div>
 </div>

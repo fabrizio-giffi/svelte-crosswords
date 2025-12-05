@@ -7,13 +7,9 @@ export default class CrosswordsModel extends Model {
 		return 'crosswords';
 	}
 
-	static get idColumn() {
-		return 'id';
-	}
-
 	id!: number;
-	hor!: number;
-	ver!: number;
+	horizontal!: number;
+	vertical!: number;
 	created!: string;
 
 	$beforeInsert() {
@@ -25,16 +21,16 @@ export default class CrosswordsModel extends Model {
 			relation: Model.HasManyRelation,
 			modelClass: CellsModel,
 			join: {
-				from: 'crossword.id',
-				to: 'cells.crosswordId'
+				from: 'crosswords.id',
+				to: 'cells.crossword'
 			}
 		},
 		definitions: {
 			relation: Model.HasManyRelation,
 			modelClass: DefinitionsModel,
 			join: {
-				from: 'crossword.id',
-				to: 'cells.crosswordId'
+				from: 'crosswords.id',
+				to: 'definitions.crossword'
 			}
 		}
 	};
@@ -42,23 +38,12 @@ export default class CrosswordsModel extends Model {
 	static get jsonSchema() {
 		return {
 			type: 'object',
-			required: ['hor', 'ver'],
+			required: ['horizontal', 'vertical'],
 			properties: {
 				id: { type: 'integer' },
-				hor: { type: 'integer' },
-				ver: { type: 'integer' },
-				created: { type: 'string' },
-				cells: {
-					type: 'object',
-					properties: {
-						hor: { type: 'integer' },
-						ver: { type: 'integer' },
-						number: { type: 'integer' },
-						letter: { type: 'string' },
-						black: { type: 'boolean' },
-						solution: { type: 'string' }
-					}
-				}
+				horizontal: { type: 'integer' },
+				vertical: { type: 'integer' },
+				created: { type: 'string' }
 			}
 		};
 	}

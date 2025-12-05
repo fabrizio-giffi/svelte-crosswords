@@ -6,27 +6,18 @@
 
 	export let data: { crossword: Crossword };
 	let { crossword } = data;
-	let hor = crossword.hor;
-	let ver = crossword.ver;
+	let horizontal = crossword.horizontal;
+	let vertical = crossword.vertical;
 	let responseState = '';
 
-	function createCrossword(hor: number, ver: number) {
+	function createCrossword(horizontal: number, vertical: number) {
 		if (crossword.workInProgress && !confirm('Are you sure you want to reset the grid?')) return;
-		crossword = Crossword.createEmptyGrid(hor, ver);
+		crossword = new Crossword(horizontal, vertical);
 	}
 
 	async function saveCrossword() {
-		debugger
-		const response = await fetch('/api/create', {
-			method: 'POST',
-			body: JSON.stringify(crossword),
-			headers: {
-				'content-type': 'application/json'
-			}
-		});
-
-		console.log(response);
-		responseState = await response.json();
+		const response = crossword.saveToDb();
+		responseState = await response;
 	}
 </script>
 
@@ -35,16 +26,17 @@
 		<div class="flex gap-5">
 			<label>
 				Horizontal squares
-				<input name="hor" bind:value={hor} type="number" step="1" min="1" />
+				<input name="horizontal" bind:value={horizontal} type="number" step="1" min="1" />
 			</label>
 			<label>
 				Vertical squares
-				<input name="ver" bind:value={ver} type="number" step="1" min="1" />
+				<input name="vertical" bind:value={vertical} type="number" step="1" min="1" />
 			</label>
 		</div>
-		<Button type="submit" onclickCallback={() => createCrossword(hor, ver)}>
+		<Button type="submit" onclickCallback={() => createCrossword(horizontal, vertical)}>
 			{crossword.workInProgress ? 'Reset' : 'Create'} grid
 		</Button>
+		<Button type="button" onclickCallback={() => saveCrossword()}>Anvedi ao</Button>
 	</form>
 
 	<section class="create-mode">
@@ -76,8 +68,6 @@
 			</div>
 		{/if}
 	</section>
-
-	<Button type="button" onclickCallback={() => saveCrossword()}>Anvedi ao</Button>
 
 	<style>
 	</style>

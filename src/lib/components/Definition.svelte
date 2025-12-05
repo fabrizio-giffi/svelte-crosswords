@@ -1,14 +1,12 @@
 <script lang="ts">
 	import type { Definition } from '$lib/types/crossword';
-	let {
-		gridNumber,
-		text = $bindable()
-	}: { gridNumber: Definition['gridNumber']; text: Definition['text'] } = $props();
+	let { number, text = $bindable() }: { number: Definition['number']; text: Definition['text'] } =
+		$props();
 </script>
 
 <div>
 	<span class="definition-grid-number">
-		{gridNumber}
+		{number}
 	</span>
 	<label>
 		<input name="definition-text" bind:value={text} type="text" />

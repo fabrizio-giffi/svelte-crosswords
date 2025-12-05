@@ -1,39 +1,51 @@
-import type { Cell as CellType, Definitions } from '$lib/types/crossword';
+import type { Cell, Cells, DbCells, DbDefinitions, Definitions } from '$lib/types/crossword';
 
-const emptyCellsDefault = [[{ number: null, letter: null, black: false }]];
+const defaultCell: Cell = { number: null, letter: null, black: false };
 
 export class Crossword {
-	hor: number;
-	ver: number;
-	cells: CellType[][] = $state(emptyCellsDefault);
+	id: number;
+	horizontal: number;
+	vertical: number;
+	cells: Cells = $state([[defaultCell]]);
 	definitions: Definitions = $state({ horizontal: [], vertical: [] });
-	workInProgress: boolean = $derived(
-		JSON.stringify(this.cells) !== JSON.stringify(emptyCellsDefault)
-	);
+	workInProgress: boolean = $derived(!Object.is(this.cells, [[defaultCell]]));
 
 	constructor(
-		hor: number,
-		ver: number,
-		cells: CellType[][] = emptyCellsDefault,
-		definitions: Definitions = { horizontal: [], vertical: [] }
+		horizontal: number,
+		vertical: number,
+		id: number = -1,
+		cells: DbCells = [],
+		definitions: DbDefinitions = []
 	) {
-		this.hor = hor;
-		this.ver = ver;
-		this.cells = cells;
-		this.definitions = definitions;
+		this.id = id;
+		this.horizontal = horizontal;
+		this.vertical = vertical;
+		this.cells = this.createGrid(horizontal, vertical, cells);
+		if (!cells.length) this.computeGridNumbers();
+		if (definitions.length) this.createDefinitions(definitions);
 	}
 
-	static createEmptyGrid(hor: number, ver: number) {
-		const crossword = new Crossword(hor, ver);
-		crossword.cells = Array(ver)
+	createGrid(horizontal: number, vertical: number, cells: DbCells | []): Cells {
+		const formattedCells: DbCells =
+			cells.length === horizontal * vertical
+				? cells
+				: Array(horizontal * vertical).fill(defaultCell);
+
+		return Array(vertical)
 			.fill(null)
-			.map(() =>
-				Array(hor)
+			.map((_: null, rowIndex) =>
+				Array(horizontal)
 					.fill(null)
-					.map(() => ({ number: null, letter: null, black: false }))
+					.map((_: null, colIndex) => formattedCells[rowIndex * horizontal + colIndex])
 			);
-		crossword.computeGridNumbers();
-		return crossword;
+	}
+
+	createDefinitions(definitions: DbDefinitions) {
+		definitions.forEach((definition) => {
+			definition.direction === 'horizontal'
+				? this.definitions.horizontal.push(definition)
+				: this.definitions.vertical.push(definition);
+		});
 	}
 
 	computeGridNumbers = (): void => {
@@ -42,8 +54,8 @@ export class Crossword {
 		this.cells.forEach((row) => row.forEach((cell) => (cell.number = null)));
 		this.definitions = { horizontal: [], vertical: [] };
 
-		for (let row = 0; row < this.ver; row++) {
-			for (let col = 0; col < this.hor; col++) {
+		for (let row = 0; row < this.vertical; row++) {
+			for (let col = 0; col < this.horizontal; col++) {
 				if (this.cells[row][col].black) continue;
 				if (this.isWordStart(row, col, sequenceNumber)) {
 					this.cells[row][col].number = sequenceNumber;
@@ -51,6 +63,7 @@ export class Crossword {
 				}
 			}
 		}
+		// TODO MOVE AWAY
 		this.persistToLocalStorage();
 	};
 
@@ -62,34 +75,54 @@ export class Crossword {
 		return isHorizontalStart || isVerticalStart;
 	}
 
-	private addHorizontalDefinition(sequenceNumber: number): void {
-		this.definitions.horizontal.push({ gridNumber: sequenceNumber, text: null });
+	private addHorizontalDefinition(number: number): void {
+		this.definitions.horizontal.push({ number: number, text: null, direction: 'horizontal' });
 	}
 
-	private addVerticalDefinition(sequenceNumber: number): void {
-		this.definitions.vertical.push({ gridNumber: sequenceNumber, text: null });
+	private addVerticalDefinition(number: number): void {
+		this.definitions.vertical.push({ number: number, text: null, direction: 'vertical' });
 	}
 
 	private _isHorizontalWordStart(row: number, col: number): boolean {
 		const isLeftEdge: boolean = col === 0;
-		const isRightEdge: boolean = col === this.hor - 1;
+		const isRightEdge: boolean = col === this.horizontal - 1;
 		const previousCellIsBlack: boolean = col > 0 ? this.cells[row][col - 1].black : false;
-		const nextCellIsBlack: boolean = col < this.hor - 1 ? this.cells[row][col + 1].black : false;
+		const nextCellIsBlack: boolean =
+			col < this.horizontal - 1 ? this.cells[row][col + 1].black : false;
 		return (isLeftEdge || previousCellIsBlack) && !isRightEdge && !nextCellIsBlack;
 	}
 
 	private _isVerticalWordStart(row: number, col: number): boolean {
 		const isTopEdge: boolean = row === 0;
-		const isBottomEdge: boolean = row === this.ver - 1;
+		const isBottomEdge: boolean = row === this.vertical - 1;
 		const previousCellIsBlack: boolean = row > 0 ? this.cells[row - 1][col].black : false;
-		const nextCellIsBlack: boolean = row < this.ver - 1 ? this.cells[row + 1][col].black : false;
+		const nextCellIsBlack: boolean =
+			row < this.vertical - 1 ? this.cells[row + 1][col].black : false;
 		return (isTopEdge || previousCellIsBlack) && !isBottomEdge && !nextCellIsBlack;
 	}
 
 	private persistToLocalStorage() {
-		localStorage.setItem('hor', JSON.stringify(this.hor));
-		localStorage.setItem('ver', JSON.stringify(this.ver));
+		localStorage.setItem('id', JSON.stringify(this.id));
+		localStorage.setItem('horizontal', JSON.stringify(this.horizontal));
+		localStorage.setItem('vertical', JSON.stringify(this.vertical));
 		localStorage.setItem('cells', JSON.stringify(this.cells));
 		localStorage.setItem('definitions', JSON.stringify(this.definitions));
 	}
+
+	saveToDb = async () => {
+		const finalCrossword = {
+			horizontal: this.horizontal,
+			vertical: this.vertical,
+			cells: this.cells,
+			definitions: this.definitions
+		};
+		const response = await fetch('/api/create', {
+			method: 'POST',
+			body: JSON.stringify(finalCrossword),
+			headers: {
+				'content-type': 'application/json'
+			}
+		});
+		return await response.json();
+	};
 }

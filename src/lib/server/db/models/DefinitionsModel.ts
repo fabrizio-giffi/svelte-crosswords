@@ -6,14 +6,33 @@ export default class DefinitionsModel extends Model {
 		return 'definitions';
 	}
 
+	id!: number;
+	direction!: string;
+	text!: string;
+	number!: number;
+
 	static relationMappings: RelationMappings | RelationMappingsThunk = {
-		owner: {
+		crossword: {
 			relation: Model.BelongsToOneRelation,
 			modelClass: CrosswordsModel,
 			join: {
-				from: 'cells.crosswordId',
+				from: 'definitions.crossword',
 				to: 'crosswords.id'
 			}
 		}
 	};
+
+	static get jsonSchema() {
+		return {
+			type: 'object',
+			required: ['direction', 'text', 'number', 'crossword'],
+			properties: {
+				id: { type: 'integer' },
+				direction: { type: 'string' },
+				text: { type: 'string' },
+				number: { type: 'integer' },
+				crossword: { type: 'integer' }
+			}
+		};
+	}
 }

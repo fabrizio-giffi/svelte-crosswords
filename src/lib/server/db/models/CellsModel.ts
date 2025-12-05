@@ -6,21 +6,18 @@ export default class CellsModel extends Model {
 		return 'cells';
 	}
 
-	hor!: number;
-	ver!: number;
-	number?: number;
-	letter?: string;
+	id!: number;
+	number: number | null = null;
+	letter: string | null = null;
 	black!: boolean;
-	solution?: string;
-
-	crosswordId!: number;
+	solution: string | null = null;
 
 	static relationMappings: RelationMappings | RelationMappingsThunk = {
-		owner: {
+		crossword: {
 			relation: Model.BelongsToOneRelation,
 			modelClass: CrosswordsModel,
 			join: {
-				from: 'cells.crosswordId',
+				from: 'cells.crossword',
 				to: 'crosswords.id'
 			}
 		}
@@ -29,10 +26,9 @@ export default class CellsModel extends Model {
 	static get jsonSchema() {
 		return {
 			type: 'object',
-			required: ['hor', 'ver', 'black', 'crossword'],
+			required: ['black', 'crossword'],
 			properties: {
-				hor: { type: 'integer' },
-				ver: { type: 'integer' },
+				id: { type: 'integer' },
 				number: { type: 'integer' },
 				letter: { type: 'string' },
 				black: { type: 'boolean' },
