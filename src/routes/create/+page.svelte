@@ -8,10 +8,25 @@
 	let { crossword } = data;
 	let hor = crossword.hor;
 	let ver = crossword.ver;
+	let responseState = '';
 
 	function createCrossword(hor: number, ver: number) {
 		if (crossword.workInProgress && !confirm('Are you sure you want to reset the grid?')) return;
 		crossword = Crossword.createEmptyGrid(hor, ver);
+	}
+
+	async function saveCrossword() {
+		debugger
+		const response = await fetch('/api/create', {
+			method: 'POST',
+			body: JSON.stringify(crossword),
+			headers: {
+				'content-type': 'application/json'
+			}
+		});
+
+		console.log(response);
+		responseState = await response.json();
 	}
 </script>
 
@@ -61,6 +76,8 @@
 			</div>
 		{/if}
 	</section>
+
+	<Button type="button" onclickCallback={() => saveCrossword()}>Anvedi ao</Button>
 
 	<style>
 	</style>

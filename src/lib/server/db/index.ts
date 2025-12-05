@@ -1,7 +1,7 @@
 import { DATABASENAME } from '$env/static/private';
 import { Model } from 'objection';
 import { serializeResponse } from './serializer';
-import CrosswordsModel from './models';
+import CrosswordsModel from './models/CrosswordsModel';
 import knex from 'knex';
 import type { CreateCrosswordPayload, CreateCrosswordResponse } from './types.ts';
 import type { Crossword } from '$lib/types/crossword';

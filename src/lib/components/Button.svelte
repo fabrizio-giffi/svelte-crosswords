@@ -7,7 +7,7 @@
 		label?: string;
 		disabled?: boolean;
 		onclickCallback: () => void;
-		children: Snippet;
+		children?: Snippet;
 	}
 
 	function onClickHandler(event: MouseEvent) {
