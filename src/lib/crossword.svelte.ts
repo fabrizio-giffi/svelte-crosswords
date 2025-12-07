@@ -20,15 +20,15 @@ export class Crossword {
 		this.id = id;
 		this.horizontal = horizontal;
 		this.vertical = vertical;
-		this.cells = this.createGrid(horizontal, vertical, cells);
+		this.cells = this.createGrid(horizontal, vertical);
 		if (!cells.length) this.computeGridNumbers();
 		if (definitions.length) this.createDefinitions(definitions);
 	}
 
-	createGrid(horizontal: number, vertical: number, cells: DbCells | []): Cells {
+	createGrid(horizontal: number, vertical: number): Cells {
 		const formattedCells: DbCells =
-			cells.length === horizontal * vertical
-				? cells
+			this.cells.length === horizontal * vertical
+				? this.cells
 				: Array(horizontal * vertical).fill(defaultCell);
 
 		return Array(vertical)
@@ -40,13 +40,11 @@ export class Crossword {
 			);
 	}
 
-	createDefinitions(definitions: DbDefinitions) {
-		definitions.forEach((definition) => {
-			definition.direction === 'horizontal'
-				? this.definitions.horizontal.push(definition)
-				: this.definitions.vertical.push(definition);
-		});
-	}
+	createDefinitions = (definitions: DbDefinitions) => {
+		for (const def of definitions) {
+			this.definitions[def.direction].push(def);
+		}
+	};
 
 	computeGridNumbers = (): void => {
 		let sequenceNumber = 1;

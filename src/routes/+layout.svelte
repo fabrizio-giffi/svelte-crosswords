@@ -13,7 +13,6 @@
 	<div class="flex items-center gap-3">
 		<a href="/">Home </a>
 		<a href="/create">Create</a>
-		<a href="/play">Play</a>
 	</div>
 	<div class="flex items-center">
 		<a href="#"> Login </a>

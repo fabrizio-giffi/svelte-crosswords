@@ -39,7 +39,7 @@
 						</li>
 					{/each}
 				</ul>
-			{/each}number
+			{/each}
 		</div>
 	</section>
 </main>
