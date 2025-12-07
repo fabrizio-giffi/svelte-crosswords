@@ -5,6 +5,7 @@ import CrosswordsModel from './models/CrosswordsModel';
 import knex from 'knex';
 import type { CreateCrosswordPayload, CreateCrosswordResponse } from './types.ts';
 import type { Crossword } from '$lib/types/crossword';
+import { error } from '@sveltejs/kit';
 
 // Initialize knex.
 const knexInstance = knex({
@@ -29,9 +30,8 @@ export async function getCrosswordById(id: number): Promise<Crossword | undefine
 	const response = await CrosswordsModel.query()
 		.findById(id)
 		.withGraphFetched('[cells, definitions]');
-
 	if (!response) {
-		throw new Error('Not found');
+		error(404, { message: `No crossword found with ID ${id}` });
 	}
 	return serializeOne(response);
 }
